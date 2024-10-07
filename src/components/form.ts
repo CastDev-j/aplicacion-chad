@@ -1,27 +1,29 @@
 import htmlForm from "./form.html?raw";
 
+let hasInteracted = false; // Variable para rastrear si el usuario ha interactuado
+
 export default function form($app: HTMLDivElement) {
   $app.innerHTML = htmlForm;
 
   const $form: HTMLFormElement = $app.querySelector("form")!;
 
+  // Detecta la interacción del usuario
+  document.addEventListener('click', () => {
+    hasInteracted = true; // Marcamos que el usuario ha interactuado
+  });
+
   $form.addEventListener("submit", (event) => {
     event.preventDefault();
 
     const formData = new FormData($form);
-
-
     const weight = Number(formData.get("weight"));
-
-
-
 
     if (weight < 0) {
       alert("El peso no puede ser negativo");
       return;
     }
 
-    if(weight >= 100){
+    if (weight >= 100) {
       chadFunction();
       return;
     }
@@ -31,8 +33,8 @@ export default function form($app: HTMLDivElement) {
 }
 
 const chadFunction = () => {
-    imageAnimation();
-    musicFunction();
+  imageAnimation();
+  musicFunction();
 }
 
 const imageAnimation = () => {
@@ -43,13 +45,13 @@ const imageAnimation = () => {
   img!.classList.toggle("animate");
 }
 
-// esta funcion reproduce el mpeg en ../assets/heavy-song.mpeg
+// Esta función reproduce el audio del elemento <audio> en el HTML
 const musicFunction = () => {
-    const audio = new Audio("./heavy-song.mp3"); 
-    
-    audio.play().catch((error) => {
-        console.error("Error al intentar reproducir el audio:", error);
-        alert("El navegador no pudo reproducir el audio.");
-    });
+  if (!hasInteracted) return; // No intentamos reproducir el audio si no ha habido interacción
 
+  const audioElement = document.getElementById("audio") as HTMLAudioElement; // Obtenemos el elemento de audio
+  audioElement.play().catch((error) => {
+    console.error("Error al intentar reproducir el audio:", error);
+    alert("El navegador no pudo reproducir el audio.");
+  });
 }
